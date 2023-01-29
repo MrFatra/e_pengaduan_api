@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Complaint;
 // use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class People extends Authenticatable
 {
@@ -15,4 +16,9 @@ class People extends Authenticatable
     protected $fillable = ['nik', 'nama', 'username', 'password', 'telp'];
 
     protected $primaryKey = 'nik';
+
+    public function complaints()
+    {
+        return $this->hasMany(Complaint::class);
+    }
 }

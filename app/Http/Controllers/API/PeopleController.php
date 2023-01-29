@@ -5,10 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Models\People;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\ResponseFormatter as Response;
+use App\Helpers\ResponseFormatter as JSON;
+use Illuminate\Support\Facades\Auth;
 
 class PeopleController extends Controller
 {
@@ -32,7 +31,7 @@ class PeopleController extends Controller
         );
 
         if ($validator->fails()) {
-            return Response::error($validator->errors(), 'Validation error');
+            return JSON::error($validator->errors(), 'Validation error');
         } else {
 
             $data['password'] = Hash::make($data['password']);
@@ -45,7 +44,7 @@ class PeopleController extends Controller
             // ! CREATE BEARER TOKEN
             $token = $people->createToken('my-app-token')->plainTextToken;
 
-            return Response::success([
+            return JSON::success([
                 'token' => $token,
                 'people' => $people
             ], 'OK');
@@ -68,94 +67,34 @@ class PeopleController extends Controller
         $people = People::where('username', $request->username)->first();
 
         if (!$people) {
-            return Response::error('Error', 'No User Found..');
+            return JSON::error('Error', 'No User Found..');
         }
 
         // ! HASH CHECK
         if (Hash::check($request->password, $people->password)) {
             $token = $people->createToken('my-app-token')->plainTextToken;
-            return Response::success([
+            return JSON::success([
                 'token' => $token,
                 'people' => $people,
             ], '200 OK');
         } else {
-            return Response::error('Error', 'Something went wrong...');
+            return JSON::error('Error', 'Something went wrong...');
         }
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getProfile(Request $request)
     {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        if (Auth::check()) {
+            return JSON::success([
+                'nik' => $request->user()->nik,
+                'nama' => $request->user()->nama,
+                'username' => $request->user()->username,
+                'telp' => $request->user()->telp
+            ], '200 OK');
+        } else {
+            return JSON::error('Something went wrong', 'FAILED GET DATA USER');
+        }
     }
 }

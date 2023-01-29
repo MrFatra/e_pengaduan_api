@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Response;
 // use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Officer extends Authenticatable
 {
@@ -16,4 +17,9 @@ class Officer extends Authenticatable
 
     protected $guarded = ['id_petugas'];
     protected $primaryKey = 'id_petugas';
+
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
 }

@@ -14,7 +14,12 @@ class CreateComplaintsTable extends Migration
     public function up()
     {
         Schema::create('complaints', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_pengaduan');
+            $table->date('tgl_pengaduan');
+            $table->string('nik');
+            $table->text('isi_laporan');
+            $table->text('foto');
+            $table->enum('status', ['proses', 'selesai'])->default('proses');
             $table->timestamps();
         });
     }
